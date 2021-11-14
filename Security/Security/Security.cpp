@@ -1,9 +1,7 @@
-
-
 #include <iostream>
 #include <string>
 #include <sstream>
-//mohanad
+#include <bitset>
 using namespace std;
 
 class key_64bit
@@ -138,11 +136,61 @@ public:
         }
         return result;
     }
+    string decimal_to_hexa(int x) {
+        string y;
+        switch (x)
+        {
+        case 0:y = "0000";
+            break;
+        case 1:y = "0001";
+            break;
+        case 2:y = "0010";
+            break;
+        case 3:y = "0011";
+            break;
+        case 4:y = "0100";
+            break;
+        case 5:y = "0101";
+            break;
+        case 6:y = "0110";
+            break;
+        case 7:y = "0111";
+            break;
+        case 8:y = "1000";
+            break;
+        case 9:y = "1001";
+            break;
+        case 10:y = "1010";
+            break;
+        case 11:y = "1011";
+            break;
+        case 12:y = "1100";
+            break;
+        case 13:y = "1101";
+            break;
+        case 14:y = "1110";
+            break;
+        case 15:y = "1111";
+            break;
+        }
+        return y;
+    }
+ 
+        string binaryToHex(string binary) {
+
+        string hexSum;
+
+        bitset<64> set(binary);
+        stringstream res;
+        res << hex << uppercase << set.to_ulong();
+        return res.str();
+
+    }
     void key_bit()
     {
         string temp;
         cout << "please enter ur key: ";
-        getline(cin, key_as_string_64);
+       getline(cin, key_as_string_64);
         key_as_binary = converting_string_binary(key_as_string_64);
         for (int i = 0; i < 56; i++)    //for loop for converting 64 to 56 bit
         {
@@ -181,17 +229,15 @@ public:
             sub_keys[round] = sub_sub_key[round];
 
         }
-
-
     }
 };
-
 
 class plain : public key_64bit
 {
 public:
-    string y;
-    string input_sbox[16];
+    string temperoray="";
+    int round = -1;
+    string input_sbox;
     int SBOX[8][4][16] = { { 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
                           0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8,
                           4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
@@ -225,7 +271,7 @@ public:
                           1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2,
                           7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8,
                           2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 } };;
-    string plaintext_hexa, plaintext_binary_new, plaintext_binary;
+    string plaintext_hexa,  plaintext_binary;
     string plainleft, plainright, new_expansion_48bit;
     int initial_permutation[64] = { 58, 50, 42, 34, 26, 18, 10, 2,
                              60, 52, 44, 36, 28, 20, 12, 4,
@@ -243,72 +289,156 @@ public:
                       22, 23, 24, 25, 24, 25, 26, 27,
                       28, 29, 28, 29, 30, 31, 32, 1
     };
+    string SBOX_output="";
+    string final_permutation= { 40, 8, 48, 16, 56, 24, 64, 32,
+        39, 7, 47, 15, 55, 23, 63, 31,
+        38, 6, 46, 14, 54, 22, 62, 30,
+        37, 5, 45, 13, 53, 21, 61, 29,
+        36, 4, 44, 12, 52, 20, 60, 28,
+        35, 3, 43, 11, 51, 19, 59, 27,
+        34, 2, 42, 10, 50, 18, 58, 26,
+        33, 1, 41, 9, 49, 17, 57, 25 };
+    string FUNCTION_OUTBUT= "";
+    string right_after_xor = "";
+    int permutation[32] = { 16, 7, 20, 21,
+                    29, 12, 28, 17,
+                    1, 15, 23, 26,
+                    5, 18, 31, 10,
+                    2, 8, 24, 14,
+                    32, 27, 3, 9,
+                    19, 13, 30, 6,
+                    22, 11, 4, 25 };
 public:
 
-    void showing() {
+    string showing()
+    {
+        string plaintext_binary_new;
         cout << "enter ur plaintext : " << endl;
         cin >> plaintext_hexa;
-
         plaintext_binary = key_64bit::converting_string_binary(plaintext_hexa);
 
         for (int i = 0; i < 64; i++)    //for loop for converting 64 to 64 bit
         {
             plaintext_binary_new += plaintext_binary[(initial_permutation[i]) - 1];
         }
+        return plaintext_binary_new;
 
-
-        for (int i = 0; i < 32; i++)
-        {
-            plainleft += plaintext_binary_new[i];
-            plainright += plaintext_binary_new[i + 32];
-        }
-
-    }
-    void manger_function(string sub_keys[])
+    } 
+    string manger_function(string sub_keys[],string plaintext_binary_new,int roundsubkey)
     {
-
-        for (int i = 0; i < 48; i++)    //for loop for converting 32 to 48 bit(expantion permutation)
-        {
-            new_expansion_48bit += plainright[(expansion_permutation[i]) - 1];
-        }
-
-        for (int i = 0; i < 48; i++)
-        {
-
-            input_sbox[0] += XOR(new_expansion_48bit[i], sub_keys[0][i]);
-
-        }
-        for (int i = 0; i < 48; i++)
-        {
-        }
+        string result;
+        plainleft = "";
+        plainright = "";
 
 
-    }
+            for (int i = 0; i < 32; i++)
+            {
+                plainleft += plaintext_binary_new[i];
+                plainright += plaintext_binary_new[i + 32];
+            }
+            new_expansion_48bit = "";
+            for (int i = 0; i < 48; i++)    //for loop for converting 32 to 48 bit(expantion permutation)
+            {
+                new_expansion_48bit += plainright[(expansion_permutation[i]) - 1];
+            }
+            input_sbox = "";
+            for (int i = 0; i < 48; i++)   //E table XOR subkey///////////////
+            {
+
+                input_sbox += XOR(new_expansion_48bit[i], sub_keys[roundsubkey][i]);
+
+            }
+            SBOX_output = "";
+            temperoray = "";
+            for (int i = 0; i <= 48; i++)  //SBOX 48-->32
+            {
+                if (i % 6 == 0)
+                {
+                    if (i == 0) {
+                        temperoray += input_sbox[i];
+                        round = -1;
+                        continue;
+                    }
+                    round++;
 
 
+                    if (temperoray[0] == '0' && temperoray[5] == '0')
+                    {
+                        //SF AWL
+                        SBOX_output += decimal_to_hexa(SBOX[round][0][stoi(temperoray.substr(1, 4), 0, 2)]);
+                    }
+                    else  if (temperoray[0] == '0' && temperoray[5] == '1')
+                    {
+                        //sf tany
+                        SBOX_output += decimal_to_hexa(SBOX[round][1][stoi(temperoray.substr(1, 4), 0, 2)]);
 
+                    }
+                    else  if (temperoray[0] == '1' && temperoray[5] == '0')
+                    {
+                        //sf talt
+                        SBOX_output += decimal_to_hexa(SBOX[round][2][stoi(temperoray.substr(1, 4), 0, 2)]);
 
+                    }
+                    else  if (temperoray[0] == '1' && temperoray[5] == '1')
+                    {
+                        //sf rabe3
+                        SBOX_output += decimal_to_hexa(SBOX[round][3][stoi(temperoray.substr(1, 4), 0, 2)]);
+
+                    }
+
+                    temperoray = "";
+                }
+                temperoray += input_sbox[i];
+            }
+            FUNCTION_OUTBUT = "";
+            right_after_xor = "";
+            for (int i = 0; i < 32; i++)    //for loop for converting 32 to 32 bit(expantion permutation)
+            {
+                FUNCTION_OUTBUT += SBOX_output[(permutation[i]) - 1];
+            }
+
+            for (int i = 0; i < 32; i++)
+            {
+                right_after_xor += XOR(plainleft[i], FUNCTION_OUTBUT[i]);
+            }
+            result = plainright + right_after_xor;
+            return result;
+    } 
 };
-
-
-
-
-
 int main()
 {
     key_64bit key1;
     key1.key_bit();
     plain plaintext1;
-    plaintext1.showing();
-    plaintext1.manger_function(key1.sub_keys);
-    cout << plaintext1.input_sbox[0] << "   " << key1.sub_keys[0];
+    string plaintextenterance="";
+    string result;
+    string result_new, plainleft, plainright;
+   
+    plaintextenterance =plaintext1.showing();
+    cout << plaintextenterance << endl;
+    
+        for (int i = 15; i >=0; i--)
+        {
+            if (i == 15)
+                result = plaintextenterance;
 
+            result = plaintext1.manger_function(key1.sub_keys, result, i);
+        }
+        for (int i = 0; i < 32; i++)
+        {
+            plainleft += result[i];
+            plainright += result[i + 32];
+        }
+        result = plainright + plainleft;
+        for (int i = 0; i < 64; i++)    //for loop for converting 32 to 48 bit(expantion permutation)
+        {
+            result_new += result[(plaintext1.final_permutation[i]) - 1];
+        }
+        cout << result << endl << result_new;
 
+        cout << endl;
 
-
-
-    cout << endl;
-
+    
 
     return 0;
 }
