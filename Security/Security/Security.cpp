@@ -485,8 +485,7 @@ public:
 };
 int main()
 {
-    while (1)
-    {
+    
         string input, text, key;
         getline(cin, input);
         text = input.substr(20, 16);
@@ -525,7 +524,7 @@ int main()
             plaintext1.printing(result);
         }
 
-    }
+    
      
     
  
