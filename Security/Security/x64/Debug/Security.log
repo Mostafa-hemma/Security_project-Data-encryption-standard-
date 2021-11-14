@@ -1,2 +1,3 @@
 ﻿  Security.cpp
+D:\Security_project-Data-encryption-standard-\Security\Security\Security.cpp(37,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   Security.vcxproj -> D:\Security_project-Data-encryption-standard-\Security\x64\Debug\Security.exe

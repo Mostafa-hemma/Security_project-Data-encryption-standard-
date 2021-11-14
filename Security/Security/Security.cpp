@@ -8,16 +8,13 @@ class key_64bit
 {
 
 public:
-    string key_as_string_64;
     string key_as_string_56[56];
     string sub_keys[16];
     string key_as_binary;
     string sub_sub_key[16];
-
     string key_left[28], key_right[28];
     stringstream hexa;
     string leftkey, rightkey;
-
     int premited_choice_1[56] = { 57, 49, 41, 33, 25, 17, 9,
                      1, 58, 50, 42, 34, 26, 18,
                      10, 2, 59, 51, 43, 35, 27,
@@ -26,7 +23,6 @@ public:
                      7, 62, 54, 46, 38, 30, 22,
                      14, 6, 61, 53, 45, 37, 29,
                      21, 13, 5, 28, 20, 12, 4 };
-
     int premited_choice_key_2[48] = { 14, 17, 11, 24, 1, 5,
                          3, 28, 15, 6, 21, 10,
                          23, 19, 12, 4, 26, 8,
@@ -35,6 +31,85 @@ public:
                          30, 40, 51, 45, 33, 48,
                          44, 49, 39, 56, 34, 53,
                          46, 42, 50, 36, 29, 32 };
+    string binaryToHex(string sBinary)
+    {
+        string rest="", tmp, chr = "0000";
+        int len = sBinary.length() / 4;
+        chr = chr.substr(0, len);
+        for (int i = 0; i < sBinary.length(); i += 4)
+        {
+            tmp = sBinary.substr(i, 4);
+            if (!tmp.compare("0000"))
+            {
+                rest = rest + "0";
+            }
+            else if (!tmp.compare("0001"))
+            {
+                rest = rest + "1";
+            }
+            else if (!tmp.compare("0010"))
+            {
+                rest = rest + "2";
+            }
+            else if (!tmp.compare("0011"))
+            {
+                rest = rest + "3";
+            }
+            else if (!tmp.compare("0100"))
+            {
+                rest = rest + "4";
+            }
+            else if (!tmp.compare("0101"))
+            {
+                rest = rest + "5";
+            }
+            else if (!tmp.compare("0110"))
+            {
+                rest = rest + "6";
+            }
+            else if (!tmp.compare("0111"))
+            {
+                rest = rest + "7";
+            }
+            else if (!tmp.compare("1000"))
+            {
+                rest = rest + "8";
+            }
+            else if (!tmp.compare("1001"))
+            {
+                rest = rest + "9";
+            }
+            else if (!tmp.compare("1010"))
+            {
+                rest = rest + "A";
+            }
+            else if (!tmp.compare("1011"))
+            {
+                rest = rest + "B";
+            }
+            else if (!tmp.compare("1100"))
+            {
+                rest = rest + "C";
+            }
+            else if (!tmp.compare("1101"))
+            {
+                rest = rest + "D";
+            }
+            else if (!tmp.compare("1110"))
+            {
+                rest = rest + "E";
+            }
+            else if (!tmp.compare("1111"))
+            {
+                rest = rest + "F";
+            }
+            else
+            {
+                continue;
+            }
+        }
+        return rest;
+    }
     string converting_string_binary(string key_as_string)
     {
 
@@ -175,22 +250,10 @@ public:
         }
         return y;
     }
- 
-        string binaryToHex(string binary) {
 
-        string hexSum;
-
-        bitset<64> set(binary);
-        stringstream res;
-        res << hex << uppercase << set.to_ulong();
-        return res.str();
-
-    }
-    void key_bit()
+    void key_bit(string key_as_string_64)
     {
         string temp;
-        cout << "please enter ur key: ";
-       getline(cin, key_as_string_64);
         key_as_binary = converting_string_binary(key_as_string_64);
         for (int i = 0; i < 56; i++)    //for loop for converting 64 to 56 bit
         {
@@ -271,7 +334,7 @@ public:
                           1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2,
                           7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8,
                           2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 } };;
-    string plaintext_hexa,  plaintext_binary;
+    string   plaintext_binary;
     string plainleft, plainright, new_expansion_48bit;
     int initial_permutation[64] = { 58, 50, 42, 34, 26, 18, 10, 2,
                              60, 52, 44, 36, 28, 20, 12, 4,
@@ -308,13 +371,12 @@ public:
                     32, 27, 3, 9,
                     19, 13, 30, 6,
                     22, 11, 4, 25 };
+
 public:
 
-    string showing()
+    string showing(string plaintext_hexa)
     {
         string plaintext_binary_new;
-        cout << "enter ur plaintext : " << endl;
-        cin >> plaintext_hexa;
         plaintext_binary = key_64bit::converting_string_binary(plaintext_hexa);
 
         for (int i = 0; i < 64; i++)    //for loop for converting 64 to 64 bit
@@ -404,26 +466,9 @@ public:
             result = plainright + right_after_xor;
             return result;
     } 
-};
-int main()
-{
-    key_64bit key1;
-    key1.key_bit();
-    plain plaintext1;
-    string plaintextenterance="";
-    string result;
-    string result_new, plainleft, plainright;
-   
-    plaintextenterance =plaintext1.showing();
-    cout << plaintextenterance << endl;
-    
-        for (int i = 15; i >=0; i--)
-        {
-            if (i == 15)
-                result = plaintextenterance;
-
-            result = plaintext1.manger_function(key1.sub_keys, result, i);
-        }
+    void printing(string result)
+    {
+        string result_new, plainleft, plainright;
         for (int i = 0; i < 32; i++)
         {
             plainleft += result[i];
@@ -432,14 +477,58 @@ int main()
         result = plainright + plainleft;
         for (int i = 0; i < 64; i++)    //for loop for converting 32 to 48 bit(expantion permutation)
         {
-            result_new += result[(plaintext1.final_permutation[i]) - 1];
+            result_new += result[(final_permutation[i]) - 1];
         }
-        cout << result << endl << result_new;
+        cout << binaryToHex(result_new) << endl;
+    }
 
-        cout << endl;
+};
+int main()
+{
+    while (1)
+    {
+        string input, text, key;
+        getline(cin, input);
+        text = input.substr(20, 16);
+        key = input.substr(37);
+        key_64bit key1;
+        key1.key_bit(key);
 
+        plain plaintext1;
+        string plaintextenterance = "";
+        plaintextenterance = plaintext1.showing(text);
+
+        string result;
+
+        if (input[12] == 'e' || input[12] == 'E')
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                if (i == 0)
+                    result = plaintextenterance;
+
+                result = plaintext1.manger_function(key1.sub_keys, result, i);
+            }
+            plaintext1.printing(result);
+
+        }
+        else if (input[12] == 'd' || input[12] == 'D')
+        {
+
+            for (int i = 15; i >= 0; i--)
+            {
+                if (i == 15)
+                    result = plaintextenterance;
+
+                result = plaintext1.manger_function(key1.sub_keys, result, i);
+            }
+            plaintext1.printing(result);
+        }
+
+    }
+     
     
-
+ 
     return 0;
 }
 
