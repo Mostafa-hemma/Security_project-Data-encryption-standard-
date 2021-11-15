@@ -10,7 +10,7 @@ public:
 	string sub_keys[16];
 	string key_as_binary;
 	string sub_sub_key[16];
-	string key_left[28], key_right[28];
+	
 	stringstream hexa;
 	string leftkey, rightkey;
 	int premited_choice_1[56] = { 57, 49, 41, 33, 25, 17, 9,1, 58, 50, 42, 34, 26, 18,10, 2, 59, 51, 43, 35, 27,19, 11, 3, 60, 52, 44, 36,63, 55, 47, 39, 31, 23, 15,7, 62, 54, 46, 38, 30, 22,14, 6, 61, 53, 45, 37, 29,21, 13, 5, 28, 20, 12, 4 };
@@ -247,14 +247,10 @@ public:
 		key_as_string_56 = permutation_function(key_as_binary, premited_choice_1, 56);
 		for (int i = 0; i < 28; i++)
 		{
-			key_left[i] = key_as_string_56[i];
-			key_right[i] = key_as_string_56[i + 28];
+			leftkey += key_as_string_56[i];
+			rightkey += key_as_string_56[i + 28];
 		}
-		for (int i = 0; i < 28; i++)
-		{
-			leftkey += key_left[i];
-			rightkey += key_right[i];
-		}
+		
 		for (int round = 0; round <= 15; round++)
 		{
 			if ((round == 0) || (round == 1) || round == 8 || round == 15)
@@ -404,37 +400,42 @@ public:
 };
 int main()
 {
-	string input, text, key;
-	getline(cin, input);
-	text = input.substr(20, 16);
-	key = input.substr(37);
-	key_64bit key1;
-	key1.key_bit(key);
-	plain plaintext1;
-	string plaintextenterance = "";
-	plaintextenterance = plaintext1.showing(text);
-	string result;
-	if (input[12] == 'e' || input[12] == 'E')
+	while (1)
 	{
-		for (int i = 0; i < 16; i++)
+		string input, text, key;
+		getline(cin, input);
+		text = input.substr(8, 16);
+		key = input.substr(25);
+		key_64bit key1;
+		key1.key_bit(key);
+		plain plaintext1;
+		string plaintextenterance = "";
+		plaintextenterance = plaintext1.showing(text);
+		string result;
+		if (input[0] == 'e' || input[0] == 'E')
 		{
-			if (i == 0)
-			result = plaintextenterance;
-			result = plaintext1.manger_function(key1.sub_keys, result, i);
+			for (int i = 0; i < 16; i++)
+			{
+				if (i == 0)
+					result = plaintextenterance;
+				result = plaintext1.manger_function(key1.sub_keys, result, i);
+			}
+			plaintext1.printing(result);
 		}
-		plaintext1.printing(result);
-	}
-	else if (input[12] == 'd' || input[12] == 'D')
-	{
-		for (int i = 15; i >= 0; i--)
+		else if (input[0] == 'd' || input[0] == 'D')
 		{
-			if (i == 15)
-				result = plaintextenterance;
+			for (int i = 15; i >= 0; i--)
+			{
+				if (i == 15)
+					result = plaintextenterance;
 
-			result = plaintext1.manger_function(key1.sub_keys, result, i);
+				result = plaintext1.manger_function(key1.sub_keys, result, i);
+			}
+			plaintext1.printing(result);
 		}
-		plaintext1.printing(result);
 	}
 	return 0;
+
+
 }
 
