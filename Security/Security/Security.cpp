@@ -400,8 +400,7 @@ public:
 };
 int main()
 {
-	while (1)
-	{
+	
 		string input, text, key;
 		getline(cin, input);
 		text = input.substr(8, 16);
@@ -420,6 +419,7 @@ int main()
 					result = plaintextenterance;
 				result = plaintext1.manger_function(key1.sub_keys, result, i);
 			}
+			cout << "cipher: ";
 			plaintext1.printing(result);
 		}
 		else if (input[0] == 'd' || input[0] == 'D')
@@ -431,9 +431,10 @@ int main()
 
 				result = plaintext1.manger_function(key1.sub_keys, result, i);
 			}
+			cout << "plain: ";
 			plaintext1.printing(result);
 		}
-	}
+	
 	return 0;
 
 
